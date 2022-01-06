@@ -22,7 +22,7 @@ class AccountsAppTest(TestCase):
     def test_valid_user1(self):
         try:
             u = User(**self.base_user_data)
-            self.assertIsNone(u.full_clean())
+            self.assertIsNone(u.full_clean(), '\nبرای مدل User فیلدهای username و password را به‌درستی تعریف نکرده‌اید.')
         except TypeError:
             raise self.fail('user with only username & password should be valid')
 
@@ -53,4 +53,4 @@ class TaskModelTest(TestCase):
     def test_valid_task(self):
         task = Task.objects.create(**self.task_info)
         task.refresh_from_db()
-        self.assertIsNone(task.assigned_benefactor)
+        self.assertIsNone(task.assigned_benefactor, '\nبرای فیلد assigned_benefactor مقدار null را برابر True قرار نداده‌اید.')
