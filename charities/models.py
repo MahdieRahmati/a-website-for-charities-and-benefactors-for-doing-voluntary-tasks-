@@ -20,11 +20,11 @@ class Task(models.Model):
     STATE_CHOICES = ["P" , "W" , "A" , "D"]
     assigned_benifactor  = models.ForeignKey(Benefactor , null=True , on_delete= models.SET_NULL)
     charity = models.ForeignKey(Charity)
-    age_limit_from = models.IntegerField(blank = True)
-    age_limit_to = models.IntegerField(blank = True)
-    date = models.DateField(blank = True)
-    description = models.TextField(blank = True)
-    gender_limit = models.CharField(max_length = 1 , choices= GENDER_CHOICES , blank= True)
+    age_limit_from = models.IntegerField(blank = True , null=True)
+    age_limit_to = models.IntegerField(blank = True , null =True)
+    date = models.DateField(blank = True , null = True)
+    description = models.TextField(blank = True , null = True)
+    gender_limit = models.CharField(max_length = 1 , choices= GENDER_CHOICES , blank= True , null=True)
     state = models.CharField(default = "P" , choices=STATE_CHOICES)
     title = models.CharField(max_length = 60) 
 
