@@ -18,4 +18,7 @@ class Charity(models.Model):
 
 
 class Task(models.Model):
+    user = models.OneToOneField(User)
+    name = models.CharField(max_length=50)
+    reg_number = models.CharField(max_length=10)
     
