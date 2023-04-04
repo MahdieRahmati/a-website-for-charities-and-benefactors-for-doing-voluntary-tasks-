@@ -1,8 +1,16 @@
 from django.db import models
+from accounts.models import User
 
 
 class Benefactor(models.Model):
-    pass
+
+    EXPERIENCE_CHOICES = [ 0 , 1 , 2]
+    user = models.OneToOneField(User)
+    experience = models.SmallIntegerField(choices= EXPERIENCE_CHOICES , default= 0 )
+    free_time_per_week = models.PositiveSmallIntegerField(default = 0 )
+
+
+    
 
 
 class Charity(models.Model):
@@ -10,4 +18,4 @@ class Charity(models.Model):
 
 
 class Task(models.Model):
-    pass
+    
