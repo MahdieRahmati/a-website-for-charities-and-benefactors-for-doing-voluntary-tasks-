@@ -18,8 +18,9 @@ class Charity(models.Model):
 
 class TaskManager(models.Manager):
     def related_tasks_to_charity(self, user):
-        users_charity = user.charity   #model_lowercased name
+
         if hasattr(user , "charity"):
+            users_charity = user.charity
             result = self.filter(charity = users_charity)
             return result
         else:
@@ -27,8 +28,8 @@ class TaskManager(models.Manager):
 
 
     def related_tasks_to_benefactor(self, user):
-        users_benefactor = user.benefactor
         if hasattr(user , "benefactor"):
+            users_benefactor = user.benefactor
             result = self.filter(assigned_benefactor = users_benefactor)
             return result
         else:
