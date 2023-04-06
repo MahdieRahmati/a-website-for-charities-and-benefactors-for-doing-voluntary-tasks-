@@ -16,7 +16,6 @@ class Charity(models.Model):
 
 class TaskManager(models.Manager):
     def related_tasks_to_charity(self, user):
-
         if hasattr(user , "charity"):
             users_charity = user.charity
             result = self.filter(charity = users_charity)
