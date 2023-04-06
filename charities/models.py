@@ -1,7 +1,5 @@
 from django.db import models
 from accounts.models import User
-from itertools import chain
-
 
 class Benefactor(models.Model):
 
@@ -33,7 +31,7 @@ class TaskManager(models.Manager):
             result = self.filter(assigned_benefactor = users_benefactor)
             return result
         else:
-            Task.objects.none()
+            return Task.objects.none()
 
 
     def all_related_tasks_to_user(self, user):
