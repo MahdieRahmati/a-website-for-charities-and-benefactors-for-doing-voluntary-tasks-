@@ -19,31 +19,27 @@ class Charity(models.Model):
 class TaskManager(models.Manager):
     def related_tasks_to_charity(self, user):
         users_charity = user.charity   #model_lowercased name
-        if users_charity == None:
-            return self.none() 
-        else:
+        if user.is_charity:
             result = self.filter(charity = users_charity)
             return result
+        else:
+            return self.none()
+
 
     def related_tasks_to_benefactor(self, user):
         users_benefactor = user.benefactor
-        if users_benefactor == None:
-            return self.none()
-        else:
+        if user.is_benefactor:
             result = self.filter(assigned_benefactor = users_benefactor)
             return result
+        else:
+            self.none()
+
 
     def all_related_tasks_to_user(self, user):
-        if user.charity == None:
-            users_charity_tasks = self.none()
-        else:
-            users_charity_tasks  = self.filter(charity = user.charity)
-        if user.benefactor == None:
-            users_benefactor_tasks = self.none()
-        else:
-            users_benefactor_tasks = self.filter(assigned_benefactor = user.benefactor)
+        users_charity_tasks = TaskManager.related_tasks_to_charity(user)
+        users_benefactor_tasks = TaskManager.related_tasks_to_benefactor(user)
         pending_tasks = self.filter(state = "P")
-        return users_benefactor_tasks + users_charity_tasks + pending_tasks
+        return users_benefactor_tasks | users_charity_tasks | pending_tasks
 
 
 class Task(models.Model):
