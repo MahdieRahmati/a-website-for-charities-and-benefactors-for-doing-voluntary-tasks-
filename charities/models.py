@@ -34,8 +34,14 @@ class TaskManager(models.Manager):
             return result
 
     def all_related_tasks_to_user(self, user):
-        users_charity_tasks  = Task.objects.filter(charity = user.charity)
-        users_benefactor_tasks = Task.objects.filter(assigned_benefactor = user.benefactor)
+        if user.charity == None:
+            users_charity_tasks = Task.objects.none()
+        else:
+            users_charity_tasks  = Task.objects.filter(charity = user.charity)
+        if user.benefactor == None:
+            users_benefactor_tasks = Task.objects.none()
+        else:
+            users_benefactor_tasks = Task.objects.filter(assigned_benefactor = user.benefactor)
         pending_tasks = Task.objects.filter(state = "P")
         return users_benefactor_tasks | users_charity_tasks | pending_tasks
 
