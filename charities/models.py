@@ -43,7 +43,7 @@ class TaskManager(models.Manager):
         else:
             users_benefactor_tasks = self.filter(assigned_benefactor = user.benefactor)
         pending_tasks = self.filter(state = "P")
-        return users_benefactor_tasks | users_charity_tasks | pending_tasks
+        return users_benefactor_tasks + users_charity_tasks + pending_tasks
 
 
 class Task(models.Model):
