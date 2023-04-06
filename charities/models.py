@@ -19,8 +19,8 @@ class Charity(models.Model):
 class TaskManager(models.Manager):
     def related_tasks_to_charity(self, user):
         users_charity = user.charity   #model_lowercased name
-        if user.is_charity:
-            result = Task.objects.filter(charity = users_charity)
+        if hasattr(user , "charity"):
+            result = self.filter(charity = users_charity)
             return result
         else:
             return Task.objects.none()
@@ -28,17 +28,17 @@ class TaskManager(models.Manager):
 
     def related_tasks_to_benefactor(self, user):
         users_benefactor = user.benefactor
-        if user.is_benefactor:
-            result = Task.objects.filter(assigned_benefactor = users_benefactor)
+        if hasattr(user , "benefactor"):
+            result = self.filter(assigned_benefactor = users_benefactor)
             return result
         else:
             Task.objects.none()
 
 
     def all_related_tasks_to_user(self, user):
-        users_charity_tasks = TaskManager.related_tasks_to_charity(user)
-        users_benefactor_tasks = TaskManager.related_tasks_to_benefactor(user)
-        pending_tasks = Task.objects.filter(state = "P")
+        users_charity_tasks = self.related_tasks_to_charity(user)
+        users_benefactor_tasks = self.related_tasks_to_benefactor(user)
+        pending_tasks = self.filter(state = "P")
         return users_benefactor_tasks | users_charity_tasks | pending_tasks
 
 
