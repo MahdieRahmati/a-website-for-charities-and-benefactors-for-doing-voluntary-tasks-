@@ -18,14 +18,20 @@ class Charity(models.Model):
 
 class TaskManager(models.Manager):
     def related_tasks_to_charity(self, user):
-        users_charity = user.charity   #model_lowercased name 
-        result = Task.objects.filter(charity = users_charity)
-        return result
+        users_charity = user.charity   #model_lowercased name
+        if users_charity == None:
+            return Task.objects.none() 
+        else:
+            result = Task.objects.filter(charity = users_charity)
+            return result
 
     def related_tasks_to_benefactor(self, user):
         users_benefactor = user.benefactor
-        result = Task.objects.filter(assigned_benefactor = users_benefactor)
-        return result
+        if users_benefactor == None:
+            return Task.objects.none()
+        else:
+            result = Task.objects.filter(assigned_benefactor = users_benefactor)
+            return result
 
     def all_related_tasks_to_user(self, user):
         users_charity_tasks  = Task.objects.filter(charity = user.charity)
