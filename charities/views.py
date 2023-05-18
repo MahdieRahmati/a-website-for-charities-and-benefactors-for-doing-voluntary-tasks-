@@ -70,7 +70,14 @@ class Tasks(generics.ListCreateAPIView):
 
 
 class TaskRequest(APIView):
-    pass
+    permission_classes = [IsBenefactor]
+
+    def get(self , request , task_id):
+        task = get_object_or_404(Task , pk = task_id)
+        if task.state != "P":
+            return Response(data={'detail': 'This task is not pending.'} , status=404)
+        task.assign_to_benefactor(request.user.benefactor)
+        return Response(data={'detail': 'Request sent.'} , status=200)
 
 
 class TaskResponse(APIView):
