@@ -77,7 +77,7 @@ class TaskRequest(APIView):
         if task.state != "P":
             return Response(data={'detail': 'This task is not pending.'} , status=404)
         task.assign_to_benefactor(request.user.benefactor)
-        return Response(data={'detail': 'Request sent.'} , status=200)
+        return Response(data={'detail': 'Request sent.'} , status=200) 
 
 
 class TaskResponse(APIView):
