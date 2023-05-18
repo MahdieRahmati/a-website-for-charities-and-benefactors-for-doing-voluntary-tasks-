@@ -71,7 +71,7 @@ class Task(models.Model):
 
     def _reject_benefactor(self):
         self.state = "P"
-        self.assigned_benefactor = None
+        self.assigned_benefactor = None 
         self.save()
 
     def done(self):
