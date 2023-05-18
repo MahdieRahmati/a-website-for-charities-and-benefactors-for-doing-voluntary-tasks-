@@ -59,4 +59,19 @@ class Task(models.Model):
         self.assigned_benefactor = benefactor
         self.save()
 
+    def response_to_benefactor_request(self, response):
+        if response == 'A':
+            self._accept_benefactor()
+        else:
+            self._reject_benefactor()
+
+    def _accept_benefactor(self):
+        self.state = Task.state = "A"
+        self.save()
+
+    def _reject_benefactor(self):
+        self.state = Task.state = "P"
+        self.assigned_benefactor = None
+        self.save()
+
     
