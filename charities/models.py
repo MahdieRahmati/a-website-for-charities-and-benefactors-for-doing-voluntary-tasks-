@@ -54,4 +54,9 @@ class Task(models.Model):
     title = models.CharField(max_length = 60) 
     objects = TaskManager()
 
+    def assign_to_benefactor(self, benefactor):
+        self.state = "W"
+        self.assigned_benefactor = benefactor
+        self.save()
+
     
