@@ -7,4 +7,12 @@ class User(AbstractUser):
     description = models.TextField(blank = True  , null = True)
     gender = models.CharField(max_length= 1 , blank=True , null=True , choices = GENDER_CHOICES)
     phone = models.CharField(max_length= 15 , blank= True , null =True)
+
+    @property
+    def is_benefactor(self):
+        return hasattr(self, 'benefactor')
+
+    @property
+    def is_charity(self):
+        return hasattr(self, 'charity')
     
