@@ -66,12 +66,16 @@ class Task(models.Model):
             self._reject_benefactor()
 
     def _accept_benefactor(self):
-        self.state = Task.state = "A"
+        self.state = "A"
         self.save()
 
     def _reject_benefactor(self):
-        self.state = Task.state = "P"
+        self.state = "P"
         self.assigned_benefactor = None
+        self.save()
+
+    def done(self):
+        self.state = "D"
         self.save()
 
     
