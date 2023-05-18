@@ -90,7 +90,7 @@ class TaskResponse(APIView):
         elif task.state != "W":
             return Response(data={'detail': 'This task is not waiting.'} , status=404)
         elif request.data["response"] == "A":
-            task.response_to_benefactor_request(request.data["response"])
+            task.response_to_benefactor_request(request.data["response"]) 
             return Response(data={'detail': 'Response sent.'} , status=200)
 
         elif request.data["response"] == "R":
