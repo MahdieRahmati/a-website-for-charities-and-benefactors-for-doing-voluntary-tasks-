@@ -12,7 +12,7 @@ class BenefactorSerializer(serializers.ModelSerializer):
 
 class CharitySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Charity 
+        model = Charity  
         fields = ["name" , "reg_number"]
 
 
