@@ -98,7 +98,12 @@ class TaskResponse(APIView):
             return Response(data={'detail': 'Response sent.'} , status=200)
 
 
-
-
 class DoneTask(APIView):
-    pass
+    permission_classes = [IsCharityOwner]
+    def post(self , request , task_id):
+        task = get_object_or_404(Task , pk = task_id)
+        if task.state != "A":
+            return Response(data={'detail': 'Task is not assigned yet.'} , status=404)
+        else:
+            task.done()
+            return Response(data={'detail': 'Task has been done successfully.'} , status=200)
