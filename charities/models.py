@@ -1,18 +1,29 @@
 from django.db import models
 from accounts.models import User
+from .validators import reg_number_validator
 
 class Benefactor(models.Model):
 
-    EXPERIENCE_CHOICES = [ (0 , "Zero") , (1 , "One") , (2 , "Two")]
+    class BenefactorExperience(models.IntegerChoices):
+
+        BEGINNER = 0 , "Beginner"
+        INTERMEDIATE = 1 , "Intermediate"
+        EXPERT = 2 , "Expert"
+
     user = models.OneToOneField(User , on_delete= models.CASCADE)
-    experience = models.SmallIntegerField(choices= EXPERIENCE_CHOICES , default= 0 )
+    experience = models.SmallIntegerField(choices= BenefactorExperience.choices , default= BenefactorExperience.BEGINNER )
     free_time_per_week = models.PositiveSmallIntegerField(default = 0 )
+
+    def __str__(self):
+        return self.user.username
 
 class Charity(models.Model):
     user = models.OneToOneField(User , on_delete= models.CASCADE)
     name = models.CharField(max_length=50)
-    reg_number = models.CharField(max_length=10)
-
+    reg_number = models.CharField(max_length=10 , validators=[reg_number_validator])
+    
+    def __str__(self):
+        return self.name
 
 class TaskManager(models.Manager):
     def related_tasks_to_charity(self, user):
@@ -36,21 +47,26 @@ class TaskManager(models.Manager):
     def all_related_tasks_to_user(self, user):
         users_charity_tasks = self.related_tasks_to_charity(user)
         users_benefactor_tasks = self.related_tasks_to_benefactor(user)
-        pending_tasks = self.filter(state = "P")
+        pending_tasks = self.filter(state = Task.TaskStatus.PENDING)
         return users_benefactor_tasks | users_charity_tasks | pending_tasks
 
 
 class Task(models.Model):
-    GENDER_CHOICES = [ ("M" , "Male") , ("F" , "Female")]
-    STATE_CHOICES = [("P" , "Pending") , ("W" , "Waiting") , ("A" , "Assigned") , ("D" , "Done")]
+
+    class TaskStatus(models.TextChoices):
+        PENDING = 'P', 'Pending'
+        WAITING = 'W', 'Waiting'
+        ASSIGNED = 'A', 'Assigned'
+        DONE = 'D', 'Done'
+
     assigned_benefactor  = models.ForeignKey(Benefactor , null=True , on_delete= models.SET_NULL)
     charity = models.ForeignKey(Charity , on_delete= models.CASCADE)
     age_limit_from = models.IntegerField(blank = True , null=True)
     age_limit_to = models.IntegerField(blank = True , null =True)
     date = models.DateField(blank = True , null = True)
     description = models.TextField(blank = True , null = True)
-    gender_limit = models.CharField(max_length = 1 , choices= GENDER_CHOICES , blank= True , null=True)
-    state = models.CharField(default = "P" , choices=STATE_CHOICES , max_length=1)
+    gender_limit = models.CharField(max_length = 2 , choices=User.Gender.choices,default=User.Gender.UNSET)
+    state = models.CharField(default = TaskStatus.PENDING , choices= TaskStatus.choices , max_length=1)
     title = models.CharField(max_length = 60) 
     objects = TaskManager()
 
@@ -92,27 +108,27 @@ class Task(models.Model):
         return charity_tasks.union(benefactor_tasks)
 
     def assign_to_benefactor(self, benefactor):
-        self.state = "W"
+        self.state = Task.TaskStatus.WAITING
         self.assigned_benefactor = benefactor
         self.save()
 
     def response_to_benefactor_request(self, response):
-        if response == 'A':
+        if response == "A":
             self._accept_benefactor()
         else:
             self._reject_benefactor()
 
     def _accept_benefactor(self):
-        self.state = "A"
+        self.state = Task.TaskStatus.ASSIGNED
         self.save()
 
     def _reject_benefactor(self):
-        self.state = "P"
+        self.state = Task.TaskStatus.PENDING
         self.assigned_benefactor = None 
         self.save()
 
     def done(self):
-        self.state = "D"
+        self.state = Task.TaskStatus.DONE
         self.save()
 
     
